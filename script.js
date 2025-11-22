@@ -122,14 +122,29 @@ document.addEventListener('DOMContentLoaded', () => {
         notes.forEach(note => {
             const item = document.createElement('div');
             item.className = 'note-item';
+
+            // Format keywords
+            let keywordsHtml = '';
+            if (note.keywords) {
+                const keywordsList = note.keywords.split(',').map(k => k.trim()).filter(k => k);
+                if (keywordsList.length > 0) {
+                    keywordsHtml = `
+                        <div class="note-keywords-title">Keywords:</div>
+                        <div class="note-keywords-list">
+                            ${keywordsList.map(k => `<div>&gt; ${escapeHtml(k)}</div>`).join('')}
+                        </div>
+                    `;
+                }
+            }
+
             item.innerHTML = `
+                <div class="note-item-keywords">
+                    ${keywordsHtml}
+                </div>
                 <div class="note-item-content">${escapeHtml(note.content)}</div>
-                <div class="note-item-meta">
-                    <div class="note-keywords">${note.keywords ? 'Keywords: ' + escapeHtml(note.keywords) : ''}</div>
-                    <div class="note-actions">
-                        <button class="btn-icon-sm" onclick="window.triggerEdit(${note.id})">Edit</button>
-                        <button class="btn-icon-sm delete" onclick="window.triggerDelete(${note.id})">Delete</button>
-                    </div>
+                <div class="note-actions-col">
+                    <button class="btn-icon-sm" onclick="window.triggerEdit(${note.id})">Edit</button>
+                    <button class="btn-icon-sm delete" onclick="window.triggerDelete(${note.id})">Delete</button>
                 </div>
             `;
             notesList.appendChild(item);
@@ -140,17 +155,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const title = titleInput.value.trim() || 'Untitled Note';
         const summary = summaryInput.value.trim();
 
-        let content = `# ${title}\n\n`;
+        let content = `< ${title} />\n\n`;
 
         notes.forEach((note, index) => {
-            content += `## Note ${index + 1}\n`;
-            if (note.keywords) content += `**Keywords:** ${note.keywords}\n`;
+            content += `# Note ${index + 1}\n`;
             if (note.content) content += `${note.content}\n`;
+            if (note.keywords) content += `> Keywords:* ${note.keywords}\n`;
             content += `\n---\n\n`;
         });
 
         if (summary) {
-            content += `## Summary\n${summary}\n`;
+            content += `# Summary\n${summary}\n`;
         }
 
         navigator.clipboard.writeText(content).then(() => {

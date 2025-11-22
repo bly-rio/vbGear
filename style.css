@@ -34,6 +34,12 @@ body {
   flex-direction: column;
 }
 
+main {
+  padding-top: 40px;
+  padding-bottom: 40px;
+  flex: 1;
+}
+
 /* Typography */
 h1,
 h2,
@@ -56,7 +62,7 @@ a {
 .container {
   max-width: var(--container-width);
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 20px 20px;
   width: 100%;
 }
 
@@ -108,24 +114,23 @@ a {
 
 /* Hero Section */
 .hero {
-  padding: 80px 0;
+  padding: 20px 0;
   text-align: center;
 }
 
 .hero h1 {
-  font-size: 3.5rem;
-  margin-bottom: 16px;
+  font-size: 1.5rem;
+  margin-bottom: 0;
   background: linear-gradient(to right, #fff, #a1a1a1);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
 }
 
 .hero p {
-  font-size: 1.2rem;
-  color: var(--text-secondary);
-  max-width: 600px;
-  margin: 0 auto 40px;
+  display: none;
 }
 
 /* Cards Grid */
@@ -201,6 +206,7 @@ a {
 /* Footer */
 footer {
   margin-top: auto;
+  /* Keep auto for sticky footer behavior */
   padding: 40px 0;
   border-top: 1px solid var(--border-color);
   text-align: center;
@@ -656,9 +662,9 @@ textarea.form-input {
   border-radius: 12px;
   padding: 20px;
   display: grid;
-  grid-template-columns: 1fr 200px;
-  /* Content | Actions/Meta */
-  gap: 20px;
+  grid-template-columns: 200px 1fr 100px;
+  /* Keywords | Content | Actions */
+  gap: 24px;
   transition: border-color 0.2s ease;
 }
 
@@ -666,30 +672,39 @@ textarea.form-input {
   border-color: var(--text-secondary);
 }
 
+.note-item-keywords {
+  border-right: 1px solid var(--border-color);
+  padding-right: 20px;
+  font-size: 0.9rem;
+  color: var(--accent-primary);
+}
+
+.note-keywords-title {
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--text-secondary);
+}
+
+.note-keywords-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
 .note-item-content {
   white-space: pre-wrap;
   /* Preserve newlines */
+  padding-right: 20px;
 }
 
-.note-item-meta {
+.note-actions-col {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  gap: 8px;
   align-items: flex-end;
   border-left: 1px solid var(--border-color);
   padding-left: 20px;
-}
-
-.note-keywords {
-  font-size: 0.9rem;
-  color: var(--accent-primary);
-  text-align: right;
-  margin-bottom: 12px;
-}
-
-.note-actions {
-  display: flex;
-  gap: 8px;
+  justify-content: center;
 }
 
 .btn-icon-sm {
@@ -701,6 +716,8 @@ textarea.form-input {
   cursor: pointer;
   font-size: 0.85rem;
   transition: all 0.2s ease;
+  width: 100%;
+  text-align: center;
 }
 
 .btn-icon-sm:hover {
@@ -721,19 +738,30 @@ textarea.form-input {
 
   .note-item {
     grid-template-columns: 1fr;
+    gap: 16px;
   }
 
-  .note-item-meta {
+  .note-item-keywords {
+    border-right: none;
+    border-bottom: 1px solid var(--border-color);
+    padding-right: 0;
+    padding-bottom: 16px;
+  }
+
+  .note-item-content {
+    padding-right: 0;
+  }
+
+  .note-actions-col {
     border-left: none;
     border-top: 1px solid var(--border-color);
     padding-left: 0;
     padding-top: 16px;
     flex-direction: row;
-    align-items: center;
+    justify-content: flex-end;
   }
 
-  .note-keywords {
-    margin-bottom: 0;
-    text-align: left;
+  .btn-icon-sm {
+    width: auto;
   }
 }
