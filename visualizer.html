@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Visualizer - Developer Toolbox</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        .visualizer-container {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 20px;
+            height: calc(100vh - 160px);
+            /* Adjust based on header/footer */
+        }
+
+        .editors {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            height: 100%;
+        }
+
+        .editor-pane {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+            /* Fix flex overflow */
+        }
+
+        .preview-pane {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .preview-header {
+            padding: 12px 16px;
+            background: #f3f4f6;
+            color: #1f2937;
+            font-weight: 600;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .run-btn {
+            padding: 6px 16px;
+            font-size: 0.9rem;
+        }
+
+        /* Single Mode Styles */
+        .single-mode .editor-pane:not(.html-pane) {
+            display: none;
+        }
+
+        .single-mode .html-pane {
+            height: 100%;
+        }
+
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="container navbar-content">
+            <a href="index.html" class="logo">DevToolbox.</a>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="ip.html" class="nav-link">IP Checker</a>
+                <a href="beautifier.html" class="nav-link">Beautifier</a>
+                <a href="visualizer.html" class="nav-link active">Visualizer</a>
+                <a href="notes.html" class="nav-link">Notes</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container" style="padding-top: 20px; max-width: 100%; padding-left: 20px; padding-right: 20px;">
+        <div class="visualizer-container" id="viz-container">
+            <div class="editors">
+                <div class="editor-pane html-pane">
+                    <div class="pane-header">
+                        <span>HTML</span>
+                        <label class="toggle-container">
+                            <input type="checkbox" id="mode-toggle" onchange="toggleMode()">
+                            Single File Mode
+                        </label>
+                    </div>
+                    <textarea id="html-code" placeholder="<h1>Hello World</h1>"></textarea>
+                </div>
+                <div class="editor-pane">
+                    <div class="pane-header">CSS</div>
+                    <textarea id="css-code" placeholder="body { color: blue; }"></textarea>
+                </div>
+                <div class="editor-pane">
+                    <div class="pane-header">JavaScript</div>
+                    <textarea id="js-code" placeholder="console.log('Hello');"></textarea>
+                </div>
+            </div>
+
+            <div class="preview-pane">
+                <div class="preview-header">
+                    <span>Live Preview</span>
+                    <button onclick="runCode()" class="btn run-btn">Run >></button>
+                </div>
+                <iframe id="preview-frame"></iframe>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function toggleMode() {
+            const container = document.getElementById('viz-container');
+            const isSingle = document.getElementById('mode-toggle').checked;
+
+            if (isSingle) {
+                container.classList.add('single-mode');
+                document.getElementById('html-code').placeholder = '<!-- Write full HTML document here -->\n<!DOCTYPE html>\n<html>\n...';
+            } else {
+                container.classList.remove('single-mode');
+                document.getElementById('html-code').placeholder = '<h1>Hello World</h1>';
+            }
+            runCode(); // Re-run code to reflect mode change
+        }
+
+        function runCode() {
+            const html = document.getElementById('html-code').value;
+            const css = document.getElementById('css-code').value;
+            const js = document.getElementById('js-code').value;
+            const frame = document.getElementById('preview-frame');
+            const isSingle = document.getElementById('mode-toggle').checked;
+
+            const doc = frame.contentDocument || frame.contentWindow.document;
+
+            doc.open();
+
+            if (isSingle) {
+                // In single mode, we just inject the HTML content directly
+                doc.write(html);
+            } else {
+                doc.write(`
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <style>${css}</style>
+                    </head>
+                    <body>
+                        ${html}
+                        <script>${js}<\/script>
+                    </body>
+                    </html>
+                `);
+            }
+            doc.close();
+        }
+
+        // Run initial empty state
+        runCode();
+    </script>
+</body>
+
+</html>

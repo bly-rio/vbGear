@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Beautifier - Developer Toolbox</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Prettier Standalone -->
+    <script src="https://unpkg.com/prettier@2.8.8/standalone.js"></script>
+    <script src="https://unpkg.com/prettier@2.8.8/parser-html.js"></script>
+    <script src="https://unpkg.com/prettier@2.8.8/parser-postcss.js"></script>
+    <script src="https://unpkg.com/prettier@2.8.8/parser-babel.js"></script>
+
+    <!-- SQL Formatter -->
+    <script src="https://unpkg.com/sql-formatter@12.2.0/dist/sql-formatter.min.js"></script>
+
+    <style>
+        .controls {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+
+        select {
+            padding: 10px 16px;
+            border-radius: 8px;
+            background: var(--bg-card);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .editor-container {
+            height: 70vh;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="container navbar-content">
+            <a href="index.html" class="logo">DevToolbox.</a>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="ip.html" class="nav-link">IP Checker</a>
+                <a href="beautifier.html" class="nav-link active">Beautifier</a>
+                <a href="visualizer.html" class="nav-link">Visualizer</a>
+                <a href="notes.html" class="nav-link">Notes</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container" style="padding-top: 40px;">
+        <div class="controls">
+            <select id="language-select">
+                <option value="html">HTML</option>
+                <option value="css">CSS</option>
+                <option value="javascript">JavaScript</option>
+                <option value="json">JSON</option>
+                <option value="sql">SQL</option>
+            </select>
+            <button onclick="beautify()" class="btn">Beautify Code</button>
+        </div>
+
+        <div class="editor-container">
+            <div class="editor-pane">
+                <div class="pane-header">Input</div>
+                <textarea id="input-code" placeholder="Paste your messy code here..."></textarea>
+            </div>
+            <div class="editor-pane">
+                <div class="pane-header">Output</div>
+                <textarea id="output-code" readonly placeholder="Beautiful code will appear here..."></textarea>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function beautify() {
+            const input = document.getElementById('input-code').value;
+            const language = document.getElementById('language-select').value;
+            const output = document.getElementById('output-code');
+
+            if (!input.trim()) {
+                output.value = '';
+                return;
+            }
+
+            try {
+                let formatted = '';
+
+                if (language === 'sql') {
+                    // Use sql-formatter
+                    // Note: sql-formatter exposes 'sqlFormatter' global
+                    if (window.sqlFormatter) {
+                        formatted = window.sqlFormatter.format(input);
+                    } else {
+                        formatted = "Error: SQL Formatter library not loaded.";
+                    }
+                } else {
+                    // Use Prettier
+                    let parser = 'babel';
+                    let plugins = [prettierPlugins.babel];
+
+                    if (language === 'html') {
+                        parser = 'html';
+                        plugins = [prettierPlugins.html];
+                    } else if (language === 'css') {
+                        parser = 'css';
+                        plugins = [prettierPlugins.postcss];
+                    } else if (language === 'json') {
+                        parser = 'json';
+                        plugins = [prettierPlugins.babel]; // JSON is handled by babel parser usually or json parser if available
+                    }
+
+                    formatted = prettier.format(input, {
+                        parser: parser,
+                        plugins: plugins,
+                        semi: true,
+                        singleQuote: true
+                    });
+                }
+
+                output.value = formatted;
+            } catch (error) {
+                output.value = 'Error formatting code:\n' + error.message;
+                console.error(error);
+            }
+        }
+    </script>
+</body>
+
+</html>

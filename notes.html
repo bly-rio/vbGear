@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cornell Notes - Developer Toolbox</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="container navbar-content">
+            <a href="index.html" class="logo">WGear.</a>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="ip.html" class="nav-link">IP Checker</a>
+                <a href="beautifier.html" class="nav-link">Beautifier</a>
+                <a href="visualizer.html" class="nav-link">Visualizer</a>
+                <a href="notes.html" class="nav-link active">Notes</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <section class="hero" style="padding: 40px 0;">
+            <h1>Cornell Notes</h1>
+            <p>Structured note-taking for better retention.</p>
+        </section>
+
+        <div class="notes-container">
+            <div class="form-group">
+                <label for="note-title">Topic / Title</label>
+                <input type="text" id="note-title" class="form-input" placeholder="Enter the main topic...">
+            </div>
+
+            <!-- Input Section -->
+            <div class="note-input-section">
+                <div class="form-group">
+                    <label for="new-note-content">Note Content</label>
+                    <textarea id="new-note-content" class="form-input" placeholder="Type your note here..."
+                        style="min-height: 100px;"></textarea>
+                </div>
+                <div class="input-row">
+                    <div class="form-group" style="flex-grow: 1; margin-bottom: 0;">
+                        <label for="new-note-keywords">Keywords / Cues</label>
+                        <input type="text" id="new-note-keywords" class="form-input" placeholder="Keywords...">
+                    </div>
+                    <button id="add-note-btn" class="btn">Add Note</button>
+                    <button id="update-note-btn" class="btn hidden" style="background-color: #FFA500;">Update</button>
+                    <button id="cancel-edit-btn" class="btn btn-outline hidden">Cancel</button>
+                </div>
+            </div>
+
+            <!-- List Section -->
+            <div id="notes-list" class="notes-list">
+                <!-- Notes will be rendered here -->
+                <div class="empty-state">No notes added yet. Start typing above!</div>
+            </div>
+
+            <div class="form-group"
+                style="margin-top: 32px; border-top: 1px solid var(--border-color); padding-top: 24px;">
+                <label for="note-summary">Summary</label>
+                <textarea id="note-summary" class="form-input" placeholder="Summarize the main points here..."
+                    style="min-height: 120px;"></textarea>
+            </div>
+
+            <div class="notes-actions" style="justify-content: flex-end; margin-top: 24px;">
+                <button id="copy-notes-btn" class="btn">Copy to Clipboard</button>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Developer Toolbox. Built for speed and simplicity.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
