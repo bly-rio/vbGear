@@ -36,7 +36,21 @@
         }
 
         .editor-container {
-            height: 70vh;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            height: auto;
+            min-height: 80vh;
+        }
+
+        .editor-pane {
+            flex: 1;
+            min-height: 300px;
+        }
+
+        textarea {
+            white-space: pre;
+            overflow-x: auto;
         }
     </style>
 </head>
@@ -64,6 +78,10 @@
                 <option value="json">JSON</option>
                 <option value="sql">SQL</option>
             </select>
+            <label
+                style="display: flex; align-items: center; gap: 8px; color: var(--text-secondary); font-size: 0.9rem; cursor: pointer;">
+                <input type="checkbox" id="remove-spaces"> Remove extra spaces
+            </label>
             <button onclick="beautify()" class="btn">Beautify Code</button>
         </div>
 
@@ -73,7 +91,10 @@
                 <textarea id="input-code" placeholder="Paste your messy code here..."></textarea>
             </div>
             <div class="editor-pane">
-                <div class="pane-header">Output</div>
+                <div class="pane-header">
+                    Output
+                    <button onclick="copyToClipboard()" class="btn-sm btn-outline" id="copy-btn">Copy</button>
+                </div>
                 <textarea id="output-code" readonly placeholder="Beautiful code will appear here..."></textarea>
             </div>
         </div>
@@ -81,13 +102,18 @@
 
     <script>
         function beautify() {
-            const input = document.getElementById('input-code').value;
+            let input = document.getElementById('input-code').value;
             const language = document.getElementById('language-select').value;
+            const removeSpaces = document.getElementById('remove-spaces').checked;
             const output = document.getElementById('output-code');
 
             if (!input.trim()) {
                 output.value = '';
                 return;
+            }
+
+            if (removeSpaces) {
+                input = input.replace(/\s{2,}/g, ' ');
             }
 
             try {
@@ -130,6 +156,26 @@
                 output.value = 'Error formatting code:\n' + error.message;
                 console.error(error);
             }
+        }
+
+        function copyToClipboard() {
+            const output = document.getElementById('output-code');
+            const btn = document.getElementById('copy-btn');
+
+            if (!output.value) return;
+
+            output.select();
+            output.setSelectionRange(0, 99999); // For mobile devices
+
+            navigator.clipboard.writeText(output.value).then(() => {
+                const originalText = btn.innerText;
+                btn.innerText = 'Copied!';
+                setTimeout(() => {
+                    btn.innerText = originalText;
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+            });
         }
     </script>
 </body>

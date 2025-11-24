@@ -8,10 +8,16 @@
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
+    <!-- Prettier Standalone -->
+    <script src="https://unpkg.com/prettier@2.8.8/standalone.js"></script>
+    <script src="https://unpkg.com/prettier@2.8.8/parser-html.js"></script>
+    <script src="https://unpkg.com/prettier@2.8.8/parser-postcss.js"></script>
+    <script src="https://unpkg.com/prettier@2.8.8/parser-babel.js"></script>
+
     <style>
         .visualizer-container {
             display: grid;
-            grid-template-columns: 350px 1fr;
+            grid-template-columns: 40fr 60fr;
             gap: 20px;
             height: calc(100vh - 160px);
             /* Adjust based on header/footer */
@@ -70,8 +76,28 @@
             display: flex;
             align-items: center;
             gap: 8px;
+
+
             color: var(--text-secondary);
             font-size: 0.9rem;
+        }
+
+        textarea {
+            white-space: pre;
+            overflow-x: auto;
+        }
+
+        .controls {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+
+        .btn.active {
+            background: #32cd32;
+            color: var(--bg-dark);
+            border-color: #32cd32;
         }
     </style>
 </head>
@@ -91,24 +117,32 @@
     </nav>
 
     <main class="container" style="max-width: 100%; padding-left: 20px; padding-right: 20px;">
+        <div class="controls">
+            <button id="mode-btn" class="btn btn-outline" onclick="toggleMode(true)">Single File Mode</button>
+        </div>
         <div class="visualizer-container" id="viz-container">
             <div class="editors">
                 <div class="editor-pane html-pane">
                     <div class="pane-header">
                         <span>HTML</span>
-                        <label class="toggle-container">
-                            <input type="checkbox" id="mode-toggle" onchange="toggleMode()">
-                            Single File Mode
-                        </label>
+                        <button onclick="beautifyEditor('html-code', 'html')" class="btn-sm btn-outline"
+                            style="margin-left: auto;">Beautify</button>
                     </div>
                     <textarea id="html-code" placeholder="<h1>Hello World</h1>"></textarea>
                 </div>
                 <div class="editor-pane">
-                    <div class="pane-header">CSS</div>
+                    <div class="pane-header">
+                        CSS
+                        <button onclick="beautifyEditor('css-code', 'css')" class="btn-sm btn-outline">Beautify</button>
+                    </div>
                     <textarea id="css-code" placeholder="body { color: blue; }"></textarea>
                 </div>
                 <div class="editor-pane">
-                    <div class="pane-header">JavaScript</div>
+                    <div class="pane-header">
+                        JavaScript
+                        <button onclick="beautifyEditor('js-code', 'javascript')"
+                            class="btn-sm btn-outline">Beautify</button>
+                    </div>
                     <textarea id="js-code" placeholder="console.log('Hello');"></textarea>
                 </div>
             </div>
@@ -124,15 +158,25 @@
     </main>
 
     <script>
-        function toggleMode() {
-            const container = document.getElementById('viz-container');
-            const isSingle = document.getElementById('mode-toggle').checked;
+        let isSingleMode = true;
 
-            if (isSingle) {
+        function toggleMode(shouldToggle = false) {
+            const container = document.getElementById('viz-container');
+            const btn = document.getElementById('mode-btn');
+
+            if (shouldToggle) {
+                isSingleMode = !isSingleMode;
+            }
+
+            if (isSingleMode) {
                 container.classList.add('single-mode');
+                btn.classList.add('active');
+                btn.classList.remove('btn-outline');
                 document.getElementById('html-code').placeholder = '<!-- Write full HTML document here -->\n<!DOCTYPE html>\n<html>\n...';
             } else {
                 container.classList.remove('single-mode');
+                btn.classList.remove('active');
+                btn.classList.add('btn-outline');
                 document.getElementById('html-code').placeholder = '<h1>Hello World</h1>';
             }
             runCode(); // Re-run code to reflect mode change
@@ -143,13 +187,12 @@
             const css = document.getElementById('css-code').value;
             const js = document.getElementById('js-code').value;
             const frame = document.getElementById('preview-frame');
-            const isSingle = document.getElementById('mode-toggle').checked;
 
             const doc = frame.contentDocument || frame.contentWindow.document;
 
             doc.open();
 
-            if (isSingle) {
+            if (isSingleMode) {
                 // In single mode, we just inject the HTML content directly
                 doc.write(html);
             } else {
@@ -169,8 +212,41 @@
             doc.close();
         }
 
+        function beautifyEditor(elementId, language) {
+            const textarea = document.getElementById(elementId);
+            const input = textarea.value;
+
+            if (!input.trim()) return;
+
+            try {
+                let parser = 'babel';
+                let plugins = [prettierPlugins.babel];
+
+                if (language === 'html') {
+                    parser = 'html';
+                    plugins = [prettierPlugins.html];
+                } else if (language === 'css') {
+                    parser = 'css';
+                    plugins = [prettierPlugins.postcss];
+                }
+
+                const formatted = prettier.format(input, {
+                    parser: parser,
+                    plugins: plugins,
+                    semi: true,
+                    singleQuote: true
+                });
+
+                textarea.value = formatted;
+                runCode(); // Update preview
+            } catch (error) {
+                console.error('Error formatting code:', error);
+                // Optional: Show error to user
+            }
+        }
+
         // Run initial empty state
-        runCode();
+        toggleMode();
     </script>
 </body>
 

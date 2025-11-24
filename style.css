@@ -336,17 +336,6 @@ iframe {
   .ip-display {
     font-size: 2.5rem;
   }
-
-  /* Prevent auto-zoom on mobile inputs */
-  input[type="text"],
-  input[type="number"],
-  input[type="email"],
-  input[type="tel"],
-  input[type="password"],
-  textarea,
-  select {
-    font-size: 16px;
-  }
 }
 
 /* Notes Screen */
