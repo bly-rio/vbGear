@@ -99,6 +99,61 @@
             color: var(--bg-dark);
             border-color: #32cd32;
         }
+
+        /* Responsive - Better editor spacing */
+        @media (max-width: 768px) {
+            .visualizer-container {
+                grid-template-columns: 1fr;
+                height: auto;
+                gap: 24px;
+            }
+
+            .editors {
+                height: auto;
+                gap: 16px;
+            }
+
+            .editor-pane {
+                min-height: 250px;
+            }
+
+            .html-pane {
+                min-height: 350px;
+            }
+
+            /* Single mode: give HTML pane even more space */
+            .single-mode .html-pane {
+                min-height: 50vh;
+            }
+
+            .preview-pane {
+                height: 60vh;
+                min-height: 400px;
+            }
+
+            .preview-pane iframe {
+                min-height: 350px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .editor-pane {
+                min-height: 200px;
+            }
+
+            .html-pane {
+                min-height: 300px;
+            }
+
+            .single-mode .html-pane {
+                min-height: 45vh;
+            }
+
+            .preview-pane {
+                height: 50vh;
+                min-height: 350px;
+            }
+        }
     </style>
 </head>
 

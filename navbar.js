@@ -1,11 +1,12 @@
-// Navbar Component - Generado dinámicamente
+// Navbar Component - Dynamically generated
 (function() {
     const navSections = [
         {
-            label: 'Proyectos',
+            label: 'Projects',
             icon: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>`,
             items: [
-                { name: 'Notes', href: 'notes.html' }
+                { name: 'Notes', href: 'notes.html' },
+                { name: 'Calendar', href: 'calendar.html' }
             ]
         },
         {
@@ -19,17 +20,17 @@
         }
     ];
 
-    // Obtener la página actual
+    // Get current page
     const currentPage = window.location.pathname.split('/').pop() || 'index.html';
 
-    // Generar los dropdowns de navegación
+    // Generate navigation dropdowns
     const dropdownsHTML = navSections.map(section => {
         const itemsHTML = section.items.map(item => {
             const isActive = currentPage === item.href ? ' active' : '';
             return `<a href="${item.href}" class="dropdown-item${isActive}">${item.name}</a>`;
         }).join('');
         
-        // Verificar si algún item de esta sección está activo
+        // Check if any item in this section is active
         const sectionActive = section.items.some(item => item.href === currentPage) ? ' active' : '';
         
         return `
@@ -45,12 +46,12 @@
                 </div>`;
     }).join('');
 
-    // Obtener el título de la página actual para el logo
+    // Get page title for logo
     const allItems = navSections.flatMap(s => s.items);
     const currentItem = allItems.find(item => item.href === currentPage);
     const logoText = currentPage === 'index.html' ? 'vbGear' : (currentItem ? currentItem.name : 'vbGear');
 
-    // HTML del navbar
+    // Navbar HTML
     const navbarHTML = `
     <nav class="navbar">
         <div class="container navbar-content">
@@ -61,7 +62,6 @@
         </div>
     </nav>`;
 
-    // Insertar el navbar al inicio del body
+    // Insert navbar at the beginning of body
     document.body.insertAdjacentHTML('afterbegin', navbarHTML);
 })();
-

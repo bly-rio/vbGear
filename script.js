@@ -157,15 +157,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let content = `< ${title} />\n\n`;
 
-        notes.forEach((note, index) => {
-            content += `# Note ${index + 1}\n`;
-            if (note.content) content += `${note.content}\n`;
-            if (note.keywords) content += `> Keywords:* ${note.keywords}\n`;
-            content += `\n---\n\n`;
-        });
+        if (notes.length > 0) {
+            content += `Notes:\n\n`;
+
+            notes.forEach((note) => {
+                if (note.content) content += `[#] ${note.content}\n`;
+                if (note.keywords) {
+                    const keywordsList = note.keywords.split(',').map(k => k.trim()).filter(k => k);
+                    content += `{${keywordsList.join('}, {')}}\n`;
+                }
+                content += `\n`;
+            });
+        }
 
         if (summary) {
-            content += `# Summary\n${summary}\n`;
+            content += `/--------------------/\n\n`;
+            content += `# ${summary}\n`;
         }
 
         navigator.clipboard.writeText(content).then(() => {

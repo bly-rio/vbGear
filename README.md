@@ -1,103 +1,118 @@
 # 🛠️ DevToolbox
 
-Una colección de herramientas web para desarrolladores, diseñada con una estética moderna oscura y minimalista.
+A collection of web tools for developers, designed with a modern dark and minimalist aesthetic.
 
 ![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=flat&logo=html5&logoColor=white)
 ![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=flat&logo=css3&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat&logo=javascript&logoColor=black)
 
-## ✨ Características
+## ✨ Features
 
-- 🎨 **Diseño Premium Dark Mode** — Tema oscuro con acentos neón verde
-- 📱 **Responsive** — Funciona en desktop, tablet y móvil
-- ⚡ **Sin Backend** — Funciona completamente en el navegador
-- 🔒 **Privacidad** — Todo el procesamiento es local (excepto IP Checker)
+- 🎨 **Premium Dark Mode Design** — Dark theme with neon green accents
+- 📱 **Responsive** — Works on desktop, tablet and mobile
+- ⚡ **No Backend** — Runs entirely in the browser
+- 🔒 **Privacy** — All processing is local (except IP Checker)
+- 🌐 **All content in English** — Consistent language across all tools
 
-## 🧰 Herramientas Incluidas
+## 🧰 Tools Included
 
-### 🌐 IP Checker
-Consulta tu dirección IP pública instantáneamente.
-- Obtiene la IP usando la API de [ipify.org](https://ipify.org)
-- Botón de copiar al portapapeles
-- Actualización con un solo clic
+### 📁 Projects
 
-### 💅 Code Beautifier
-Formatea y embellece tu código desordenado.
-- **Lenguajes soportados:**
+#### 📝 Cornell Notes
+Structured note-taking system using the Cornell method.
+- Title/topic field
+- Notes with content and keywords
+- Add, edit and delete notes
+- Summary field
+- Export all notes to clipboard
+
+#### 📅 Calendar
+Calculate business and calendar days to a future date.
+- Interactive calendar view
+- Highlights today's date
+- Navigate between months
+- Select any future date
+- Calculates business days (weekdays only)
+- Calculates calendar days (all days)
+
+### 🔧 Tools
+
+#### 🌐 IP Checker
+Check your public IP address instantly.
+- Gets IP using the [ipify.org](https://ipify.org) API
+- Copy to clipboard button
+- One-click refresh
+
+#### 💅 Code Beautifier
+Format and beautify your messy code.
+- **Supported languages:**
   - HTML
   - CSS
   - JavaScript
   - JSON
   - SQL
-- Opción para remover espacios extra
-- Copiar resultado al portapapeles
-- Powered by [Prettier](https://prettier.io/) y [sql-formatter](https://github.com/sql-formatter-org/sql-formatter)
+- Option to remove extra spaces
+- Copy result to clipboard
+- Powered by [Prettier](https://prettier.io/) and [sql-formatter](https://github.com/sql-formatter-org/sql-formatter)
 
-### 👁️ Code Visualizer
-Playground en vivo para experimentar con código web.
-- Editores separados para HTML, CSS y JavaScript
-- Vista previa en tiempo real
-- **Modo Single File** — Escribe un documento HTML completo
-- **Modo Split** — Combina HTML + CSS + JS automáticamente
-- Botón de beautify integrado en cada editor
+#### 👁️ Code Visualizer
+Live playground to experiment with web code.
+- Separate editors for HTML, CSS and JavaScript
+- Real-time preview
+- **Single File Mode** — Write a complete HTML document
+- **Split Mode** — Combine HTML + CSS + JS automatically
+- Built-in beautify button in each editor
 
-### 📝 Cornell Notes
-Sistema de toma de notas estructurado usando el método Cornell.
-- Campo de título/tema
-- Notas con contenido y palabras clave
-- Agregar, editar y eliminar notas
-- Campo de resumen
-- Exportar todas las notas al portapapeles
+## 🚀 Installation
 
-## 🚀 Instalación
-
-No requiere instalación. Simplemente clona el repositorio y abre `index.html` en tu navegador.
+No installation required. Simply clone the repository and open `index.html` in your browser.
 
 ```bash
-git clone https://github.com/tu-usuario/gear.git
+git clone https://github.com/your-username/gear.git
 cd gear
 open index.html  # macOS
-# o simplemente abre index.html con tu navegador
+# or simply open index.html with your browser
 ```
 
-## 📁 Estructura del Proyecto
+## 📁 Project Structure
 
 ```
 gear/
-├── index.html        # Página principal con grid de herramientas
+├── index.html        # Main page with tools grid
 ├── ip.html           # IP Checker
 ├── beautifier.html   # Code Beautifier
 ├── visualizer.html   # Code Visualizer (playground)
 ├── notes.html        # Cornell Notes
-├── style.css         # Estilos globales
-├── script.js         # JavaScript para Cornell Notes
+├── calendar.html     # Calendar (business days calculator)
+├── navbar.js         # Dynamic navigation component
+├── style.css         # Global styles
+├── script.js         # JavaScript for Cornell Notes
 └── README.md
 ```
 
-## 🎨 Paleta de Colores
+## 🎨 Color Palette
 
-| Variable             | Valor                  | Descripción        |
+| Variable             | Value                  | Description        |
 |----------------------|------------------------|--------------------|
-| `--bg-dark`          | `#0a0a0a`              | Fondo principal    |
-| `--bg-card`          | `#171717`              | Fondo de tarjetas  |
-| `--text-primary`     | `#ededed`              | Texto principal    |
-| `--text-secondary`   | `#a1a1a1`              | Texto secundario   |
-| `--accent-primary`   | `#39ff14`              | Verde neón         |
-| `--border-color`     | `#333333`              | Bordes             |
+| `--bg-dark`          | `#0a0a0a`              | Main background    |
+| `--bg-card`          | `#171717`              | Card background    |
+| `--text-primary`     | `#ededed`              | Primary text       |
+| `--text-secondary`   | `#a1a1a1`              | Secondary text     |
+| `--accent-primary`   | `#39ff14`              | Neon green         |
+| `--border-color`     | `#333333`              | Borders            |
 
-## 🔧 Dependencias Externas (CDN)
+## 🔧 External Dependencies (CDN)
 
 - [Google Fonts - Inter](https://fonts.google.com/specimen/Inter)
 - [Prettier Standalone v2.8.8](https://prettier.io/docs/en/browser.html)
 - [sql-formatter v12.2.0](https://github.com/sql-formatter-org/sql-formatter)
 
-## 📄 Licencia
+## 📄 License
 
-MIT License — Libre para uso personal y comercial.
+MIT License — Free for personal and commercial use.
 
 ---
 
 <p align="center">
   <strong>DevToolbox</strong> — Built for speed and simplicity.
 </p>
-
