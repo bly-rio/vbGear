@@ -12,85 +12,96 @@
 </head>
 
 <body>
-    <nav class="navbar">
-        <div class="container navbar-content">
-            <a href="index.html" class="logo">DevToolbox</a>
-            <div class="nav-links">
-                <a href="index.html" class="nav-link active">Home</a>
-                <a href="ip.html" class="nav-link">IP Checker</a>
-                <a href="beautifier.html" class="nav-link">Beautifier</a>
-                <a href="visualizer.html" class="nav-link">Visualizer</a>
-                <a href="notes.html" class="nav-link">Notes</a>
-            </div>
-        </div>
-    </nav>
+    <script src="navbar.js"></script>
 
     <main class="container">
+        <div class="home-sections">
+            <!-- Sección A: Proyectos -->
+            <section class="home-section">
+                <div class="section-label">A. Proyectos</div>
+                <ul class="tools-list">
+                    <li>
+                        <a href="notes.html" class="tool-list-item">
+                            <div class="tool-list-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                    <polyline points="14 2 14 8 20 8"></polyline>
+                                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                                    <polyline points="10 9 9 9 8 9"></polyline>
+                                </svg>
+                            </div>
+                            <div class="tool-list-info">
+                                <h3>Notes</h3>
+                                <p>Structured note-taking.</p>
+                            </div>
+                            <span class="tool-list-arrow">&rarr;</span>
+                        </a>
+                    </li>
+                </ul>
+            </section>
 
-        <section class="tools-grid">
-            <div class="tool-card">
-                <div class="tool-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <line x1="2" y1="12" x2="22" y2="12"></line>
-                        <path
-                            d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z">
-                        </path>
-                    </svg>
-                </div>
-                <h3>IP Checker</h3>
-                <p>Instantly view your public IP address and network details with a single click.</p>
-                <a href="ip.html" class="btn btn-outline">Check IP &rarr;</a>
-            </div>
-
-            <div class="tool-card">
-                <div class="tool-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path
-                            d="M18 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3H6a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 3 3 0 0 0-3-3z">
-                        </path>
-                    </svg>
-                </div>
-                <h3>Code Beautifier</h3>
-                <p>Format and prettify your code. Supports HTML, CSS, JS, JSON, SQL, and more.</p>
-                <a href="beautifier.html" class="btn btn-outline">Beautify Code &rarr;</a>
-            </div>
-
-            <div class="tool-card">
-                <div class="tool-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                        <circle cx="12" cy="12" r="3"></circle>
-                    </svg>
-                </div>
-                <h3>Code Visualizer</h3>
-                <p>Live playground for HTML, CSS, and JavaScript. See your changes in real-time.</p>
-                <a href="visualizer.html" class="btn btn-outline">Start Coding &rarr;</a>
-            </div>
-            <div class="tool-card">
-                <div class="tool-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                        <polyline points="14 2 14 8 20 8"></polyline>
-                        <line x1="16" y1="13" x2="8" y2="13"></line>
-                        <line x1="16" y1="17" x2="8" y2="17"></line>
-                        <polyline points="10 9 9 9 8 9"></polyline>
-                    </svg>
-                </div>
-                <h3>Cornell Notes</h3>
-                <p>Structured note-taking for better retention.</p>
-                <a href="notes.html" class="btn btn-outline">Start Taking Notes &rarr;</a>
-            </div>
-        </section>
+            <!-- Sección B: Tools -->
+            <section class="home-section">
+                <div class="section-label">B. Tools</div>
+                <ul class="tools-list">
+                    <li>
+                        <a href="ip.html" class="tool-list-item">
+                            <div class="tool-list-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <line x1="2" y1="12" x2="22" y2="12"></line>
+                                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                                </svg>
+                            </div>
+                            <div class="tool-list-info">
+                                <h3>IP Checker</h3>
+                                <p>Instantly view your public IP address.</p>
+                            </div>
+                            <span class="tool-list-arrow">&rarr;</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="beautifier.html" class="tool-list-item">
+                            <div class="tool-list-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M18 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3H6a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 3 3 0 0 0-3-3z"></path>
+                                </svg>
+                            </div>
+                            <div class="tool-list-info">
+                                <h3>Code Beautifier</h3>
+                                <p>Format and prettify code (HTML, CSS, JS, JSON, SQL).</p>
+                            </div>
+                            <span class="tool-list-arrow">&rarr;</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="visualizer.html" class="tool-list-item">
+                            <div class="tool-list-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                            </div>
+                            <div class="tool-list-info">
+                                <h3>Code Visualizer</h3>
+                                <p>Playground for HTML, CSS, and JavaScript.</p>
+                            </div>
+                            <span class="tool-list-arrow">&rarr;</span>
+                        </a>
+                    </li>
+                </ul>
+            </section>
+        </div>
     </main>
 
     <footer>
         <div class="container">
-            <p>&copy; 2025 Developer Toolbox. Built for speed and simplicity.</p>
+            <p>&copy; 2025 AVI.</p>
         </div>
     </footer>
 
