@@ -14,6 +14,16 @@
     <script src="https://unpkg.com/prettier@2.8.8/parser-postcss.js"></script>
     <script src="https://unpkg.com/prettier@2.8.8/parser-babel.js"></script>
 
+    <!-- CodeMirror -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/dracula.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/xml/xml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/javascript/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/css/css.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/htmlmixed/htmlmixed.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/sql/sql.min.js"></script>
+
     <!-- SQL Formatter -->
     <script src="https://unpkg.com/sql-formatter@12.2.0/dist/sql-formatter.min.js"></script>
 
@@ -46,11 +56,22 @@
         .editor-pane {
             flex: 1;
             min-height: 300px;
+            display: flex;
+            flex-direction: column;
         }
 
         textarea {
             white-space: pre;
             overflow-x: auto;
+            /* display: none; Let CodeMirror handle visibility */
+        }
+
+        .CodeMirror {
+            height: 100%;
+            flex: 1;
+            font-family: 'Fira Code', 'Consolas', monospace;
+            font-size: 14px;
+            border-radius: 0 0 8px 8px;
         }
     </style>
 </head>
@@ -90,14 +111,66 @@
     </main>
 
     <script>
+        let inputEditor, outputEditor;
+
+        // Map dropdown values to CodeMirror modes
+        const modeMap = {
+            'html': 'htmlmixed',
+            'css': 'css',
+            'javascript': 'javascript',
+            'json': { name: 'javascript', json: true },
+            'sql': 'sql'
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const commonOptions = {
+                theme: 'dracula',
+                lineNumbers: true,
+                lineWrapping: true,
+                viewportMargin: Infinity
+            };
+
+            inputEditor = CodeMirror.fromTextArea(document.getElementById('input-code'), {
+                ...commonOptions,
+                mode: 'htmlmixed', // Default
+                placeholder: 'Paste your messy code here...'
+            });
+
+            outputEditor = CodeMirror.fromTextArea(document.getElementById('output-code'), {
+                ...commonOptions,
+                mode: 'htmlmixed', // Default
+                readOnly: true,
+                placeholder: 'Beautiful code will appear here...'
+            });
+
+            // Listen for language changes to update editor syntax highlighting
+            document.getElementById('language-select').addEventListener('change', (e) => {
+                const lang = e.target.value;
+                const mode = modeMap[lang] || 'htmlmixed';
+                
+                inputEditor.setOption('mode', mode);
+                outputEditor.setOption('mode', mode);
+            });
+            
+            // Improve focus handling
+            document.querySelectorAll('.editor-pane').forEach(pane => {
+                pane.addEventListener('click', (e) => {
+                    if (e.target.closest('.pane-header')) return;
+                    if (pane.querySelector('#input-code') || pane.contains(inputEditor.getWrapperElement())) {
+                        inputEditor.focus();
+                    }
+                    // Output is read-only so we might not want to focus it necessarily, but selecting text is useful
+                });
+            });
+        });
+
         function beautify() {
-            let input = document.getElementById('input-code').value;
+            let input = inputEditor.getValue();
             const language = document.getElementById('language-select').value;
             const removeSpaces = document.getElementById('remove-spaces').checked;
-            const output = document.getElementById('output-code');
-
+            
             if (!input.trim()) {
-                output.value = '';
+                outputEditor.setValue('');
                 return;
             }
 
@@ -110,7 +183,6 @@
 
                 if (language === 'sql') {
                     // Use sql-formatter
-                    // Note: sql-formatter exposes 'sqlFormatter' global
                     if (window.sqlFormatter) {
                         formatted = window.sqlFormatter.format(input);
                     } else {
@@ -129,7 +201,7 @@
                         plugins = [prettierPlugins.postcss];
                     } else if (language === 'json') {
                         parser = 'json';
-                        plugins = [prettierPlugins.babel]; // JSON is handled by babel parser usually or json parser if available
+                        plugins = [prettierPlugins.babel];
                     }
 
                     formatted = prettier.format(input, {
@@ -140,23 +212,20 @@
                     });
                 }
 
-                output.value = formatted;
+                outputEditor.setValue(formatted);
             } catch (error) {
-                output.value = 'Error formatting code:\n' + error.message;
+                outputEditor.setValue('Error formatting code:\n' + error.message);
                 console.error(error);
             }
         }
 
         function copyToClipboard() {
-            const output = document.getElementById('output-code');
+            const content = outputEditor.getValue();
             const btn = document.getElementById('copy-btn');
 
-            if (!output.value) return;
+            if (!content) return;
 
-            output.select();
-            output.setSelectionRange(0, 99999); // For mobile devices
-
-            navigator.clipboard.writeText(output.value).then(() => {
+            navigator.clipboard.writeText(content).then(() => {
                 const originalText = btn.innerText;
                 btn.innerText = 'Copied!';
                 setTimeout(() => {
@@ -164,6 +233,10 @@
                 }, 2000);
             }).catch(err => {
                 console.error('Failed to copy: ', err);
+                // Fallback: Select text in editor
+                outputEditor.focus();
+                outputEditor.setSelection({line:0, ch:0}, {line: outputEditor.lineCount(), ch:0});
+                document.execCommand('copy');
             });
         }
     </script>

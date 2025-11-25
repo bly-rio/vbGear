@@ -14,6 +14,15 @@
     <script src="https://unpkg.com/prettier@2.8.8/parser-postcss.js"></script>
     <script src="https://unpkg.com/prettier@2.8.8/parser-babel.js"></script>
 
+    <!-- CodeMirror -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/dracula.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/xml/xml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/javascript/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/css/css.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/htmlmixed/htmlmixed.min.js"></script>
+
     <style>
         .visualizer-container {
             display: grid;
@@ -85,6 +94,17 @@
         textarea {
             white-space: pre;
             overflow-x: auto;
+            /* display: none;  Removed to allow proper CodeMirror initialization */
+        }
+
+        .CodeMirror {
+            height: 100%;
+            width: 100%;
+            font-family: 'Fira Code', 'Consolas', monospace;
+            font-size: 14px;
+            flex: 1;
+            border-radius: 0 0 8px 8px;
+            direction: ltr;
         }
 
         .controls {
@@ -213,6 +233,54 @@
 
     <script>
         let isSingleMode = true;
+        let htmlEditor, cssEditor, jsEditor;
+
+        // Initialize CodeMirror editors
+        document.addEventListener('DOMContentLoaded', () => {
+            const commonOptions = {
+                theme: 'dracula',
+                lineNumbers: true,
+                lineWrapping: true,
+                viewportMargin: Infinity
+            };
+
+            htmlEditor = CodeMirror.fromTextArea(document.getElementById('html-code'), {
+                ...commonOptions,
+                mode: 'htmlmixed'
+            });
+
+            cssEditor = CodeMirror.fromTextArea(document.getElementById('css-code'), {
+                ...commonOptions,
+                mode: 'css'
+            });
+
+            jsEditor = CodeMirror.fromTextArea(document.getElementById('js-code'), {
+                ...commonOptions,
+                mode: 'javascript'
+            });
+
+            // Add change listeners to auto-run or validare if needed
+            // htmlEditor.on('change', () => runCode()); 
+
+            // Improve focus handling: Click anywhere in the pane focuses the editor
+            document.querySelectorAll('.editor-pane').forEach(pane => {
+                pane.addEventListener('click', (e) => {
+                    // Don't refocus if clicking buttons/header
+                    if (e.target.closest('.pane-header')) return;
+                    
+                    // Find the editor instance associated with this pane
+                    let editor;
+                    if (pane.classList.contains('html-pane')) editor = htmlEditor;
+                    else if (pane.querySelector('#css-code')) editor = cssEditor;
+                    else if (pane.querySelector('#js-code')) editor = jsEditor;
+                    
+                    if (editor) editor.focus();
+                });
+            });
+
+            // Run initial setup
+            toggleMode();
+        });
 
         function toggleMode(shouldToggle = false) {
             const container = document.getElementById('viz-container');
@@ -226,20 +294,30 @@
                 container.classList.add('single-mode');
                 btn.classList.add('active');
                 btn.classList.remove('btn-outline');
-                document.getElementById('html-code').placeholder = '<!-- Write full HTML document here -->\n<!DOCTYPE html>\n<html>\n...';
+                // Update placeholder/content if empty (Note: CodeMirror handles placeholders differently, but we'll stick to logic)
+                if(htmlEditor.getValue().trim() === '') {
+                     htmlEditor.setValue('<!-- Write full HTML document here -->\n<!DOCTYPE html>\n<html>\n...');
+                }
             } else {
                 container.classList.remove('single-mode');
                 btn.classList.remove('active');
                 btn.classList.add('btn-outline');
-                document.getElementById('html-code').placeholder = '<h1>Hello World</h1>';
             }
-            runCode(); // Re-run code to reflect mode change
+            
+            // Refresh editors to ensure proper rendering after display change
+            setTimeout(() => {
+                htmlEditor.refresh();
+                cssEditor.refresh();
+                jsEditor.refresh();
+            }, 10);
+
+            runCode(); 
         }
 
         function runCode() {
-            const html = document.getElementById('html-code').value;
-            const css = document.getElementById('css-code').value;
-            const js = document.getElementById('js-code').value;
+            const html = htmlEditor.getValue();
+            const css = cssEditor.getValue();
+            const js = jsEditor.getValue();
             const frame = document.getElementById('preview-frame');
 
             const doc = frame.contentDocument || frame.contentWindow.document;
@@ -267,8 +345,14 @@
         }
 
         function beautifyEditor(elementId, language) {
-            const textarea = document.getElementById(elementId);
-            const input = textarea.value;
+            let editor;
+            if (language === 'html') editor = htmlEditor;
+            else if (language === 'css') editor = cssEditor;
+            else if (language === 'javascript') editor = jsEditor;
+
+            if (!editor) return;
+
+            const input = editor.getValue();
 
             if (!input.trim()) return;
 
@@ -291,16 +375,13 @@
                     singleQuote: true
                 });
 
-                textarea.value = formatted;
+                editor.setValue(formatted);
                 runCode(); // Update preview
             } catch (error) {
                 console.error('Error formatting code:', error);
                 // Optional: Show error to user
             }
         }
-
-        // Run initial empty state
-        toggleMode();
     </script>
 </body>
 
