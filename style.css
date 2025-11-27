@@ -86,6 +86,30 @@ a {
   width: 100%;
 }
 
+.nav-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.mobile-menu-btn {
+  display: none;
+  background: transparent;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 8px;
+  transition: all 0.2s ease;
+}
+
+.mobile-menu-btn:hover,
+.mobile-menu-btn.active {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-primary);
+  border-color: var(--text-primary);
+}
+
 .logo {
   font-size: 1.5rem;
   font-weight: 800;
@@ -361,22 +385,88 @@ iframe {
 /* Responsive Design */
 @media (max-width: 768px) {
   :root {
-    --header-height: auto;
+    --header-height: 60px; /* Altura fija y menor */
   }
 
   .navbar {
-    padding: 16px 0;
+    padding: 0;
   }
 
   .navbar-content {
     flex-direction: column;
-    gap: 16px;
+    align-items: stretch;
+  }
+
+  .nav-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    height: var(--header-height);
+  }
+
+  .mobile-menu-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .nav-links {
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 16px;
+    display: none; /* Oculto por defecto */
+    flex-direction: column;
+    width: 100%;
+    background: var(--bg-card);
+    border-bottom: 1px solid var(--border-color);
+    padding: 16px 20px;
+    gap: 12px;
+    position: absolute;
+    top: var(--header-height);
+    left: 0;
+    right: 0;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  }
+
+  .nav-links.show {
+    display: flex;
+  }
+
+  /* Ajustar dropdowns para móvil para que se vean abiertos o simplificados */
+  .nav-dropdown {
+    width: 100%;
+  }
+
+  .nav-dropdown-btn {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .dropdown-menu {
+    position: static;
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    min-width: 100%;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    padding: 0 0 0 12px;
+    display: none; /* Ocultar submenús por defecto para ahorrar espacio */
+    margin-top: 8px;
+  }
+
+  .nav-dropdown:hover .dropdown-menu,
+  .nav-dropdown-btn:focus + .dropdown-menu,
+  .nav-dropdown-btn:active + .dropdown-menu {
+    display: block; /* Mostrar al interactuar - o podríamos dejarlos siempre visibles si se prefiere */
+  }
+  
+  /* Opción: Mostrar siempre los items en móvil para simplificar navegación */
+  .dropdown-menu {
+    display: block;
+    padding-left: 32px;
+    border-left: 1px solid var(--border-color);
+    margin-left: 10px;
+    border-radius: 0;
   }
 
   .hero h1 {

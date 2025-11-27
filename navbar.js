@@ -55,7 +55,12 @@
     const navbarHTML = `
     <nav class="navbar">
         <div class="container navbar-content">
-            <a href="index.html" class="logo">${logoText}</a>
+            <div class="nav-header">
+                <a href="index.html" class="logo">${logoText}</a>
+                <button class="mobile-menu-btn" aria-label="Toggle menu">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                </button>
+            </div>
             <div class="nav-links">
                 ${dropdownsHTML}
             </div>
@@ -64,4 +69,15 @@
 
     // Insert navbar at the beginning of body
     document.body.insertAdjacentHTML('afterbegin', navbarHTML);
+
+    // Mobile menu toggle logic
+    const menuBtn = document.querySelector('.mobile-menu-btn');
+    const navLinks = document.querySelector('.nav-links');
+    
+    if (menuBtn) {
+        menuBtn.addEventListener('click', () => {
+            navLinks.classList.toggle('show');
+            menuBtn.classList.toggle('active');
+        });
+    }
 })();
