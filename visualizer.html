@@ -174,6 +174,77 @@
                 min-height: 350px;
             }
         }
+
+        /* Full Editor Layout & Modal Styles */
+        .full-editor-layout .visualizer-container {
+            grid-template-columns: 1fr;
+        }
+
+        .full-editor-layout .preview-pane {
+            display: none;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: white;
+            width: 90%;
+            height: 90%;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .modal-header {
+            padding: 12px 16px;
+            background: #f3f4f6;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .close-modal-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #4b5563;
+            padding: 0 8px;
+        }
+
+        .close-modal-btn:hover {
+            color: #1f2937;
+        }
+
+        .modal-body {
+            flex: 1;
+            background: white;
+            position: relative;
+        }
+        
+        .modal-body iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
     </style>
 </head>
 
@@ -182,7 +253,9 @@
 
     <main class="container" style="max-width: 100%; padding-left: 20px; padding-right: 20px;">
         <div class="controls">
+            <button id="layout-btn" class="btn btn-outline" onclick="toggleLayout(true)">Switch Layout</button>
             <button id="mode-btn" class="btn btn-outline" onclick="toggleMode(true)">Single File Mode</button>
+            <button id="run-modal-btn" class="btn" style="background-color: #32cd32; color: var(--bg-dark); margin-left: auto; display: none;" onclick="openModal()">Run / View Result</button>
         </div>
         <div class="visualizer-container" id="viz-container">
             <div class="editors">
@@ -231,8 +304,22 @@
         </div>
     </main>
 
+    <!-- Preview Modal -->
+    <div id="preview-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span style="font-weight: 600;">Result Preview</span>
+                <button class="close-modal-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <!-- iframe will be moved here -->
+            </div>
+        </div>
+    </div>
+
     <script>
         let isSingleMode = true;
+        let isFullLayout = true;
         let htmlEditor, cssEditor, jsEditor;
 
         // Initialize CodeMirror editors
@@ -280,7 +367,97 @@
 
             // Run initial setup
             toggleMode();
+            toggleLayout(); // Apply default layout
+            
+            // Close modal when clicking outside
+            const modal = document.getElementById('preview-modal');
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                    closeModal();
+                }
+            }
         });
+
+        function toggleLayout(shouldToggle = false) {
+            if (shouldToggle) {
+                isFullLayout = !isFullLayout;
+            }
+
+            const container = document.getElementById('viz-container');
+            const layoutBtn = document.getElementById('layout-btn');
+            const runModalBtn = document.getElementById('run-modal-btn');
+            const iframe = document.getElementById('preview-frame');
+            const modalBody = document.getElementById('modal-body');
+            const previewPane = document.querySelector('.preview-pane'); // We need to append it back here if not full layout
+
+            if (isFullLayout) {
+                document.body.classList.add('full-editor-layout');
+                layoutBtn.textContent = "Show Split View";
+                runModalBtn.style.display = 'block';
+                
+                // Ensure iframe is ready to be in modal when opened, 
+                // but we only move it when opening modal or we can keep it in modal body? 
+                // Actually, let's keep it in the preview pane structure for logical consistency,
+                // and move it only when needed? Or just move it now.
+                // For simplicity, let's just hide preview pane. 
+                // BUT the user wants the preview in a MODAL when in full screen.
+                
+                // We will handle moving the iframe in openModal logic, 
+                // but if we are in split view, it should be in previewPane.
+                // Let's ensure it's in the right place when switching layouts.
+                if (modalBody.contains(iframe)) {
+                     // It's already in modal, fine.
+                } else {
+                    // If currently in preview pane, leave it there until modal is opened?
+                    // No, if we hide preview pane, the iframe is hidden.
+                    // So we wait for openModal to show it.
+                }
+                
+            } else {
+                document.body.classList.remove('full-editor-layout');
+                layoutBtn.textContent = "Show Full Screen";
+                runModalBtn.style.display = 'none';
+                
+                // Move iframe back to preview pane if it's in modal
+                if (!previewPane.contains(iframe)) {
+                     // Find where to insert (after header)
+                     previewPane.appendChild(iframe);
+                }
+                
+                // Also ensure modal is closed
+                closeModal();
+            }
+            
+             // Refresh editors
+            setTimeout(() => {
+                if (htmlEditor) htmlEditor.refresh();
+                if (cssEditor) cssEditor.refresh();
+                if (jsEditor) jsEditor.refresh();
+            }, 10);
+        }
+
+        function openModal() {
+            const modal = document.getElementById('preview-modal');
+            const modalBody = document.getElementById('modal-body');
+            const iframe = document.getElementById('preview-frame');
+            
+            // Move iframe to modal
+            if (!modalBody.contains(iframe)) {
+                modalBody.appendChild(iframe);
+            }
+            
+            modal.classList.add('show');
+            runCode();
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('preview-modal');
+            modal.classList.remove('show');
+            
+            // Note: We don't necessarily move the iframe back immediately 
+            // unless we switch layout, or we can leave it there until layout switch.
+            // But if we switch to split view, we handle it in toggleLayout.
+        }
 
         function toggleMode(shouldToggle = false) {
             const container = document.getElementById('viz-container');

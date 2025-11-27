@@ -4,18 +4,19 @@ document.addEventListener('DOMContentLoaded', () => {
     let editingId = null;
 
     // Elements
-    const notesList = document.getElementById('notes-list');
+    const notesListBody = document.getElementById('notes-list-body');
+    const emptyStateMsg = document.getElementById('empty-state-msg');
     const addBtn = document.getElementById('add-note-btn');
     const updateBtn = document.getElementById('update-note-btn');
     const cancelBtn = document.getElementById('cancel-edit-btn');
     const copyBtn = document.getElementById('copy-notes-btn');
+    const notesScrollArea = document.getElementById('notes-scroll-area');
 
     const titleInput = document.getElementById('note-title');
-    const summaryInput = document.getElementById('note-summary');
     const contentInput = document.getElementById('new-note-content');
     const keywordsInput = document.getElementById('new-note-keywords');
 
-    if (notesList) {
+    if (notesListBody) {
         // Event Listeners
         addBtn.addEventListener('click', addNote);
         updateBtn.addEventListener('click', updateNote);
@@ -44,6 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
         notes.push(newNote);
         clearInputs();
         renderNotes();
+        scrollToNewNote();
     }
 
     function deleteNote(id) {
@@ -71,8 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
         updateBtn.classList.remove('hidden');
         cancelBtn.classList.remove('hidden');
 
-        // Scroll to input
-        contentInput.scrollIntoView({ behavior: 'smooth' });
+        // Focus input
         contentInput.focus();
     }
 
@@ -112,16 +113,18 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function renderNotes() {
-        notesList.innerHTML = '';
+        notesListBody.innerHTML = '';
 
         if (notes.length === 0) {
-            notesList.innerHTML = '<div class="empty-state">No notes added yet. Start typing above!</div>';
+            emptyStateMsg.style.display = 'block';
             return;
+        } else {
+            emptyStateMsg.style.display = 'none';
         }
 
         notes.forEach(note => {
-            const item = document.createElement('div');
-            item.className = 'note-item';
+            const row = document.createElement('tr');
+            row.className = 'note-row';
 
             // Format keywords
             let keywordsHtml = '';
@@ -129,7 +132,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const keywordsList = note.keywords.split(',').map(k => k.trim()).filter(k => k);
                 if (keywordsList.length > 0) {
                     keywordsHtml = `
-                        <div class="note-keywords-title">Keywords:</div>
                         <div class="note-keywords-list">
                             ${keywordsList.map(k => `<div>&gt; ${escapeHtml(k)}</div>`).join('')}
                         </div>
@@ -137,23 +139,38 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
 
-            item.innerHTML = `
-                <div class="note-item-keywords">
+            row.innerHTML = `
+                <td class="note-cell-keywords">
                     ${keywordsHtml}
-                </div>
-                <div class="note-item-content">${escapeHtml(note.content)}</div>
-                <div class="note-actions-col">
-                    <button class="btn-icon-sm" onclick="window.triggerEdit(${note.id})">Edit</button>
-                    <button class="btn-icon-sm delete" onclick="window.triggerDelete(${note.id})">Delete</button>
-                </div>
+                </td>
+                <td class="note-cell-content">${escapeHtml(note.content)}</td>
+                <td class="note-cell-actions">
+                    <div class="action-buttons">
+                        <button class="btn-icon-sm" onclick="window.triggerEdit(${note.id})" title="Edit">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
+                        </button>
+                        <button class="btn-icon-sm delete" onclick="window.triggerDelete(${note.id})" title="Delete">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                        </button>
+                    </div>
+                </td>
             `;
-            notesList.appendChild(item);
+            notesListBody.appendChild(row);
         });
+    }
+
+    function scrollToNewNote() {
+        // Scroll to the bottom of the scroll area
+        if (notesScrollArea) {
+            notesScrollArea.scrollTo({
+                top: notesScrollArea.scrollHeight,
+                behavior: 'smooth'
+            });
+        }
     }
 
     function copyNotesToClipboard() {
         const title = titleInput.value.trim() || 'Untitled Note';
-        const summary = summaryInput.value.trim();
 
         let content = `< ${title} />\n\n`;
 
@@ -170,18 +187,15 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
-        if (summary) {
-            content += `/--------------------/\n\n`;
-            content += `# ${summary}\n`;
-        }
-
         navigator.clipboard.writeText(content).then(() => {
-            const originalText = copyBtn.innerText;
-            copyBtn.innerText = 'Copied!';
-            copyBtn.style.background = '#32cd32';
+            const originalContent = copyBtn.innerHTML;
+            // Change icon to checkmark
+            copyBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+            copyBtn.style.color = '#39ff14';
+            
             setTimeout(() => {
-                copyBtn.innerText = originalText;
-                copyBtn.style.background = '';
+                copyBtn.innerHTML = originalContent;
+                copyBtn.style.color = '';
             }, 2000);
         }).catch(err => {
             console.error('Failed to copy: ', err);
