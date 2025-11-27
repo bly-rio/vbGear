@@ -478,12 +478,17 @@ textarea.form-input {
 /* New Table Styles */
 .notes-table-container {
   margin-top: 24px;
+  width: 100%;
+  overflow-x: auto; /* Enable horizontal scrolling */
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+  border-radius: 8px; /* Optional: rounds corners of scrollable area */
 }
 
 .notes-table {
   width: 100%;
   border-collapse: collapse;
   font-size: 0.95rem;
+  min-width: 600px; /* Ensure table doesn't squash too much, forcing scroll */
 }
 
 .notes-table th {

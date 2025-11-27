@@ -112,6 +112,7 @@
             gap: 16px;
             margin-bottom: 20px;
             align-items: center;
+            flex-wrap: wrap;
         }
 
         .btn.active {
@@ -124,8 +125,26 @@
         @media (max-width: 768px) {
             .visualizer-container {
                 grid-template-columns: 1fr;
-                height: auto;
+                height: auto; /* Let content dictate height on mobile */
+                min-height: calc(100vh - 200px); /* Ensure it takes reasonable space */
                 gap: 24px;
+            }
+            
+            .controls {
+                gap: 12px;
+            }
+            
+            .controls button {
+                flex: 1; /* Make buttons full width or equal width on mobile lines */
+                white-space: nowrap;
+                font-size: 0.85rem;
+                padding: 8px 12px;
+            }
+
+            #run-modal-btn {
+                margin-left: 0 !important; /* Reset auto margin on mobile to prevent weird spacing */
+                width: 100%; /* Full width for the primary action */
+                order: -1; /* Show run button first on mobile if desired, or keep order. Let's keep order but make it full width if it wraps */
             }
 
             .editors {
@@ -134,7 +153,8 @@
             }
 
             .editor-pane {
-                min-height: 250px;
+                min-height: 300px; /* Increase min-height for better mobile editing */
+                height: 40vh; /* Give it some viewport based height */
             }
 
             .html-pane {
@@ -143,8 +163,9 @@
 
             /* Single mode: give HTML pane even more space */
             .single-mode .html-pane {
-                min-height: 50vh;
+                min-height: 70vh;
             }
+
 
             .preview-pane {
                 height: 60vh;
